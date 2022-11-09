@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 class Server { // Se inicia una nueva instancia de mi servidor
 
@@ -10,11 +11,18 @@ class Server { // Se inicia una nueva instancia de mi servidor
         this.port = process.env.PORT; // Creo una propiedad que guarda mi variable de entorno para el puerto
         this.usuariosPath = '/api/usuarios'; // Creo una propiedad que guarde un String que sea la ruta para los "usuarios". Esto es con fines de orden para que quien mire mi código pueda ver qué rutas existen en la aplicación
 
-        // Middlewares: Funciones que siempre se van a ejecutar cuando nosotros levantemos nuestro servidor
-        this.middlewares();
+        // Conectar a base de datos
+        this.conectarDB(); // Ejecuto el método para la conectar a mi DB.
+
+        // Middlewares: Funciones que nos proveen herramientas para nuestra aplicación. Los que se encuentran acá siempre se van a ejecutar cuando nosotros levantemos nuestro servidor
+        this.middlewares(); // Ejecuto el método para los middlewares.
 
         // Rutas de mi aplicación
         this.routes(); // Cuando se llame al constructor, al final, voy a llamar mis rutas. Se dispara dicho método y este configura mis rutas 
+    }
+
+    async conectarDB() { // Creo mi método asíncrono para conectar mi base de datos
+        await dbConnection(); // Mando a llamar la función asíncrona que tiene el URL y los argumentos para realizar la conexión a mi DB.
     }
 
     middlewares() { // Creo mi método para los Middlewares
